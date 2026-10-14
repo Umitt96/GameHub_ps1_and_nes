@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro Game Hub | Konsol Seçimi (NES & PS1)</title>
+  <meta name="description" content="2,550+ Retro oyun ve 41 efsane seri koleksiyonu. Nintendo NES (Atari) ve Sony PlayStation 1 konsollarını tarayıcınızda doğrudan oynayın.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #050811; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Ambient background grid */
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Card Glows */
+    .console-card {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .console-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .nes-card:hover {
+      box-shadow: 0 20px 50px -10px rgba(239, 68, 68, 0.25), 0 0 25px 0 rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.7);
+    }
+    .ps1-card:hover {
+      box-shadow: 0 20px 50px -10px rgba(59, 130, 246, 0.25), 0 0 25px 0 rgba(99, 102, 241, 0.2);
+      border-color: rgba(96, 165, 250, 0.7);
+    }
+
+    /* SVG Art Hover Dynamics */
+    .console-card:hover .art-vector {
+      transform: scale(1.04) translateY(-3px);
+    }
+    .art-vector {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop {
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-[#050811] text-slate-100 min-h-screen flex flex-col justify-between p-4 sm:p-8 bg-grid-pattern selection:bg-rose-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- Ambient Background Glows -->
+  <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[550px] h-[550px] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+  <div class="max-w-6xl w-full mx-auto flex flex-col gap-8 relative z-10 my-auto py-6">
+
+    <!-- Top Bar with Logo, Info and Stats -->
+    <header class="flex items-center justify-between flex-wrap gap-4 pb-4 border-b border-slate-800/80">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 via-indigo-600 to-blue-600 flex items-center justify-center text-xl shadow-lg border border-white/20">
+          🕹️
+        </div>
+        <div>
+          <span class="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">RİTALİN'İN ARŞİVİ</span>
+          <h2 class="text-lg font-black tracking-tight text-white flex items-center gap-2">
+            RETRO GAME HUB <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">v2.0</span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button id="btnOpenInfo" class="px-4 py-2 rounded-xl bg-[#0c1222] hover:bg-slate-800 border border-slate-700 text-xs font-mono font-bold text-slate-200 hover:text-white transition flex items-center gap-2 shadow-sm cursor-pointer active:scale-95">
+          <span class="text-sm">ℹ️</span>
+          <span>Proje Hakkında</span>
+        </button>
+        <div class="hidden sm:flex items-center gap-3 bg-[#0c1222] px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs font-mono">
+          <span class="text-slate-400">Toplam:</span>
+          <span class="text-amber-400 font-bold">2,550 Retro Oyun</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Title & Prompt -->
+    <div class="text-center max-w-3xl mx-auto flex flex-col items-center gap-3 pt-2">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-mono text-slate-300 shadow-inner">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>TARAYICIDA DOĞRUDAN ÇALIŞIR • SIFIR KURULUM</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+        Oynamak İstediğiniz <br class="hidden sm:block" />
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-purple-400 to-blue-400">Konsolu Seçin</span>
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-400 max-w-xl leading-relaxed">
+        Çocukluğunuzun efsanevi 8-Bit ve 32-Bit nostaljik maceraları burada. Bir konsol seçerek devasa arşivleri ve özel seri vitrinlerini keşfedin.
+      </p>
+    </div>
+
+    <!-- Console Selector Cards (2 Primary Columns) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 pt-4">
+
+      <!-- ================= NES CONSOLE CARD ================= -->
+      <a href="./nes_game_hub/index.html" class="console-card nes-card block bg-gradient-to-b from-[#131118] to-[#0c0a10] border border-red-950/80 hover:border-red-500/80 rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-5 overflow-hidden cursor-pointer group">
+        
+        <!-- Clean Sub-Header Row: Era on Left, Badges on Right (NO overlapping over picture!) -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono font-bold text-red-400 tracking-wide">8-BIT ALTIN ÇAĞI</span>
+            <span class="text-xs text-zinc-600">•</span>
+            <span class="text-xs font-mono text-zinc-400">1983 - 1994</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-red-950 text-red-300 border border-red-800/80">
+              934 OYUN
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-950 text-amber-300 border border-amber-800/80">
+              17 SERİ
+            </span>
+          </div>
+        </div>
+
+        <!-- Illustrator-Style NES Console & Controller Vector Art -->
+        <div class="w-full h-48 sm:h-56 rounded-2xl bg-[#08070b] border border-zinc-800/80 flex items-center justify-center p-3 relative overflow-hidden shadow-inner group-hover:border-red-900/60 transition-colors">
+          <!-- Subtle Glow Behind Vector -->
+          <div class="absolute w-36 h-36 bg-red-600/15 rounded-full blur-2xl group-hover:bg-red-600/30 transition-all"></div>
+
+          <!-- DETAILED ILLUSTRATOR-STYLE SVG FOR NINTENDO NES -->
+          <svg class="art-vector w-full h-full max-w-[340px] drop-shadow-2xl" viewBox="0 0 360 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="nesTopGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#CCCCCC"/>
+                <stop offset="100%" stop-color="#9E9E9E"/>
+              </linearGradient>
+              <linearGradient id="nesDarkGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#333338"/>
+                <stop offset="100%" stop-color="#1E1E22"/>
+              </linearGradient>
+              <linearGradient id="nesPadGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#DDDDDD"/>
+                <stop offset="100%" stop-color="#B0B0B0"/>
+              </linearGradient>
+              <filter id="nesShadow" x="-10%" y="-10%" width="120%" height="130%">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.6"/>
+              </filter>
+            </defs>
+
+            <!-- NES Main Console Body -->
+            <g filter="url(#nesShadow)">
+              <!-- Main Gray Housing -->
+              <rect x="35" y="30" width="220" height="95" rx="5" fill="url(#nesTopGrad)" stroke="#777" stroke-width="1.5"/>
+              
+              <!-- Front Black Section (Cartridge Door & Vent Area) -->
+              <rect x="35" y="62" width="220" height="63" rx="3" fill="url(#nesDarkGrad)"/>
+              
+              <!-- Left Upper Cartridge Flap -->
+              <rect x="42" y="36" width="130" height="26" rx="2" fill="#BDBDBD" stroke="#888" stroke-width="1"/>
+              <!-- Cartridge Flap Grip Grooves -->
+              <line x1="50" y1="42" x2="164" y2="42" stroke="#888" stroke-width="1.5"/>
+              <line x1="50" y1="46" x2="164" y2="46" stroke="#888" stroke-width="1.5"/>
+              <line x1="50" y1="50" x2="164" y2="50" stroke="#888" stroke-width="1.5"/>
+
+              <!-- Red Nintendo Logo Label -->
+              <text x="46" y="58" font-family="'JetBrains Mono', monospace" font-size="6.5" font-weight="900" fill="#E52521" letter-spacing="0.5">Nintendo</text>
+              <text x="83" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-size="4.5" font-weight="700" fill="#E52521">ENTERTAINMENT SYSTEM™</text>
+
+              <!-- Top Right Vent Grille -->
+              <g stroke="#222" stroke-width="1.8">
+                <line x1="180" y1="36" x2="248" y2="36"/>
+                <line x1="180" y1="41" x2="248" y2="41"/>
+                <line x1="180" y1="46" x2="248" y2="46"/>
+                <line x1="180" y1="51" x2="248" y2="51"/>
+                <line x1="180" y1="56" x2="248" y2="56"/>
+              </g>
+
+              <!-- Power & Reset Panel (Lower Left) -->
+              <rect x="44" y="96" width="80" height="22" rx="2" fill="#18181A" stroke="#444" stroke-width="1"/>
+              
+              <!-- Power Button -->
+              <rect x="50" y="101" width="16" height="12" rx="1.5" fill="#C4C4C4" stroke="#888" stroke-width="0.8"/>
+              <text x="51" y="99" font-family="sans-serif" font-size="4" font-weight="800" fill="#E52521">POWER</text>
+              
+              <!-- Power LED Indicator (Glowing Red) -->
+              <circle cx="72" cy="107" r="2.5" fill="#FF1A1A"/>
+              <circle cx="72" cy="107" r="5" fill="#FF0000" opacity="0.4"/>
+
+              <!-- Reset Button -->
+              <rect x="84" y="101" width="16" height="12" rx="1.5" fill="#C4C4C4" stroke="#888" stroke-width="0.8"/>
+              <text x="85" y="99" font-family="sans-serif" font-size="4" font-weight="800" fill="#E52521">RESET</text>
+
+              <!-- Controller Ports (Port 1 and Port 2) -->
+              <rect x="145" y="98" width="22" height="18" rx="2" fill="#0A0A0C" stroke="#333" stroke-width="1"/>
+              <circle cx="156" cy="107" r="5" fill="#1C1C20"/>
+              <rect x="175" y="98" width="22" height="18" rx="2" fill="#0A0A0C" stroke="#333" stroke-width="1"/>
+              <circle cx="186" cy="107" r="5" fill="#1C1C20"/>
+            </g>
+
+            <!-- Iconic NES Controller in Foreground -->
+            <g filter="url(#nesShadow)" transform="translate(140, 95) rotate(-6)">
+              <!-- Controller Base -->
+              <rect x="0" y="0" width="170" height="66" rx="4" fill="url(#nesPadGrad)" stroke="#666" stroke-width="1.5"/>
+              
+              <!-- Black Center Inset Decal -->
+              <rect x="8" y="8" width="154" height="50" rx="2" fill="#18181C"/>
+              
+              <!-- Gray Border Lines -->
+              <rect x="12" y="12" width="146" height="42" rx="1" fill="none" stroke="#666" stroke-width="0.8"/>
+              
+              <!-- D-Pad (Black Cross) -->
+              <g transform="translate(26, 21)">
+                <rect x="7" y="0" width="10" height="24" rx="1.5" fill="#111" stroke="#333" stroke-width="0.8"/>
+                <rect x="0" y="7" width="24" height="10" rx="1.5" fill="#111" stroke="#333" stroke-width="0.8"/>
+                <circle cx="12" cy="12" r="2.5" fill="#222"/>
+              </g>
+
+              <!-- SELECT and START Rubber Buttons -->
+              <g transform="translate(68, 30)">
+                <rect x="0" y="0" width="12" height="4" rx="2" fill="#888" transform="rotate(-25)"/>
+                <text x="-1" y="14" font-family="sans-serif" font-size="3.5" font-weight="800" fill="#E52521">SELECT</text>
+
+                <rect x="18" y="0" width="12" height="4" rx="2" fill="#888" transform="rotate(-25)"/>
+                <text x="18" y="14" font-family="sans-serif" font-size="3.5" font-weight="800" fill="#E52521">START</text>
+              </g>
+
+              <!-- A and B Round Red Buttons -->
+              <g transform="translate(118, 25)">
+                <!-- Button B -->
+                <circle cx="10" cy="10" r="7" fill="#E52521" stroke="#990000" stroke-width="1"/>
+                <text x="8.5" y="24" font-family="sans-serif" font-size="5" font-weight="900" fill="#E52521">B</text>
+
+                <!-- Button A -->
+                <circle cx="28" cy="10" r="7" fill="#E52521" stroke="#990000" stroke-width="1"/>
+                <text x="26.5" y="24" font-family="sans-serif" font-size="5" font-weight="900" fill="#E52521">A</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Info & Details -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-2xl font-black text-white group-hover:text-red-300 transition-colors flex items-center justify-between">
+            <span>Nintendo NES (Atari)</span>
+            <span class="text-xl group-hover:translate-x-2 transition-transform text-red-400">&rarr;</span>
+          </h3>
+
+          <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans">
+            Mantar Krallığı'ndan uzaylı cephelerine; Super Mario, Contra, Double Dragon, TMNT ve Zelda gibi efsanelerle 8-bit nostaljisini yeniden yaşayın.
+          </p>
+
+          <!-- Featured Franchises Tags -->
+          <div class="flex flex-wrap gap-1.5 pt-2">
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">Mario 1-3</span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">Contra</span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">Double Dragon</span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">Ninja Turtles</span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">Mega Man 1-6</span>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="pt-4 border-t border-red-950/60 flex items-center justify-between">
+          <span class="text-xs font-mono text-zinc-400">Arşivi Aç</span>
+          <span class="px-5 py-2.5 rounded-xl bg-red-600 group-hover:bg-red-500 text-white font-mono text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-red-900/40">
+            <span>NES Merkezine Gir</span>
+            <span>&rarr;</span>
+          </span>
+        </div>
+      </a>
+
+
+      <!-- ================= PLAYSTATION 1 CARD ================= -->
+      <a href="./ps1_game_hub/index.html" class="console-card ps1-card block bg-gradient-to-b from-[#0f1422] to-[#090d16] border border-blue-950/80 hover:border-blue-500/80 rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-5 overflow-hidden cursor-pointer group">
+        
+        <!-- Clean Sub-Header Row: Era on Left, Badges on Right (NO overlapping over picture!) -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono font-bold text-blue-400 tracking-wide">32-BIT 3D DEVRİMİ</span>
+            <span class="text-xs text-slate-600">•</span>
+            <span class="text-xs font-mono text-slate-400">1994 - 2005</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-blue-950 text-blue-300 border border-blue-800/80">
+              1,616 OYUN
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-purple-950 text-purple-300 border border-purple-800/80">
+              24 SERİ
+            </span>
+          </div>
+        </div>
+
+        <!-- Illustrator-Style PS1 Console & Controller Vector Art -->
+        <div class="w-full h-48 sm:h-56 rounded-2xl bg-[#06080e] border border-slate-800/80 flex items-center justify-center p-3 relative overflow-hidden shadow-inner group-hover:border-blue-900/60 transition-colors">
+          <!-- Subtle Glow Behind Vector -->
+          <div class="absolute w-36 h-36 bg-blue-600/15 rounded-full blur-2xl group-hover:bg-blue-600/30 transition-all"></div>
+
+          <!-- DETAILED ILLUSTRATOR-STYLE SVG FOR SONY PLAYSTATION 1 -->
+          <svg class="art-vector w-full h-full max-w-[340px] drop-shadow-2xl" viewBox="0 0 360 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ps1TopGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#E2E4E8"/>
+                <stop offset="100%" stop-color="#AEB2B9"/>
+              </linearGradient>
+              <linearGradient id="ps1LidGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#D5D8DE"/>
+                <stop offset="100%" stop-color="#9FA3AA"/>
+              </linearGradient>
+              <linearGradient id="ps1DarkSlot" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1E232E"/>
+                <stop offset="100%" stop-color="#0E1117"/>
+              </linearGradient>
+              <filter id="ps1Shadow" x="-10%" y="-10%" width="120%" height="130%">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.6"/>
+              </filter>
+            </defs>
+
+            <!-- PS1 Main Console Base -->
+            <g filter="url(#ps1Shadow)">
+              <!-- Main Gray Chassis with Sculpted Edges -->
+              <rect x="40" y="25" width="220" height="105" rx="14" fill="url(#ps1TopGrad)" stroke="#92969E" stroke-width="1.5"/>
+
+              <!-- Front Port Section Inset -->
+              <rect x="52" y="98" width="196" height="30" rx="4" fill="url(#ps1DarkSlot)"/>
+
+              <!-- Circular CD-ROM Disc Drive Lid -->
+              <circle cx="150" cy="74" r="42" fill="url(#ps1LidGrad)" stroke="#9397A0" stroke-width="1.5"/>
+              <circle cx="150" cy="74" r="39" fill="none" stroke="#BBC0C8" stroke-width="1"/>
+              
+              <!-- Iconic PlayStation 4-Color Logo on Disc Lid -->
+              <g transform="translate(142, 62) scale(0.9)">
+                <!-- Red 'P' upright -->
+                <path d="M7 2 L12 2 C15 2 17 4 17 7 C17 10 15 12 12 12 L9 12 L9 20 L7 20 Z" fill="#E21B23"/>
+                <ellipse cx="11.5" cy="7" rx="2.5" ry="2.2" fill="#AEB2B9"/>
+                <!-- Yellow / Blue / Teal 'S' flat shadow -->
+                <path d="M3 16 C6 14 11 14 15 16 C17 17 17 18 15 19 C12 20 5 19 3 20 C1 21 2 23 6 23 C11 23 18 21 19 18 C20 16 18 14 15 13" stroke="#F4C20D" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M4 18 C8 16 14 16 18 18" stroke="#00A2E8" stroke-width="2"/>
+                <path d="M6 21 C10 20 15 20 18 21" stroke="#00A859" stroke-width="1.8"/>
+              </g>
+
+              <!-- Left Side: Round POWER Button -->
+              <circle cx="68" cy="48" r="10" fill="#C5C8CE" stroke="#888C94" stroke-width="1.2"/>
+              <text x="61" y="65" font-family="sans-serif" font-size="4" font-weight="900" fill="#4B5563">POWER</text>
+              <circle cx="68" cy="48" r="2.5" fill="#10B981"/> <!-- Green LED -->
+
+              <!-- Left Side: Rectangular RESET Button -->
+              <rect x="60" y="74" width="16" height="8" rx="2" fill="#B0B4BC" stroke="#888C94" stroke-width="1"/>
+              <text x="61" y="88" font-family="sans-serif" font-size="3.5" font-weight="800" fill="#4B5563">RESET</text>
+
+              <!-- Right Side: Round OPEN Button -->
+              <circle cx="232" cy="48" r="10" fill="#C5C8CE" stroke="#888C94" stroke-width="1.2"/>
+              <text x="226" y="65" font-family="sans-serif" font-size="4" font-weight="900" fill="#4B5563">OPEN</text>
+
+              <!-- Front Port 1: Memory Card 1 & Controller 1 -->
+              <rect x="64" y="103" width="36" height="8" rx="1.5" fill="#2A303C" stroke="#4B5563" stroke-width="0.8"/>
+              <text x="73" y="109" font-family="sans-serif" font-size="3.5" font-weight="700" fill="#8892B0">MEMORY CARD</text>
+              <rect x="64" y="113" width="36" height="11" rx="2" fill="#161A22" stroke="#4B5563" stroke-width="0.8"/>
+              <!-- Port 1 socket holes -->
+              <circle cx="73" cy="118.5" r="1.5" fill="#000"/>
+              <circle cx="82" cy="118.5" r="1.5" fill="#000"/>
+              <circle cx="91" cy="118.5" r="1.5" fill="#000"/>
+
+              <!-- Front Port 2: Memory Card 2 & Controller 2 -->
+              <rect x="180" y="103" width="36" height="8" rx="1.5" fill="#2A303C" stroke="#4B5563" stroke-width="0.8"/>
+              <text x="189" y="109" font-family="sans-serif" font-size="3.5" font-weight="700" fill="#8892B0">MEMORY CARD</text>
+              <rect x="180" y="113" width="36" height="11" rx="2" fill="#161A22" stroke="#4B5563" stroke-width="0.8"/>
+              <circle cx="189" cy="118.5" r="1.5" fill="#000"/>
+              <circle cx="198" cy="118.5" r="1.5" fill="#000"/>
+              <circle cx="207" cy="118.5" r="1.5" fill="#000"/>
+            </g>
+
+            <!-- Iconic PlayStation Ergonomic Controller in Foreground -->
+            <g filter="url(#ps1Shadow)" transform="translate(135, 96) rotate(-7)">
+              <!-- Sculpted Controller Body with Dual Grips -->
+              <path d="M15 15 C25 2 65 2 85 10 C105 2 145 2 155 15 C168 28 178 72 160 82 C146 88 132 70 128 55 C125 45 110 40 85 40 C60 40 45 45 42 55 C38 70 24 88 10 82 C-8 72 2 28 15 15 Z" fill="url(#ps1TopGrad)" stroke="#8A8E96" stroke-width="1.5"/>
+
+              <!-- Directional Pad (Left 4 buttons) -->
+              <g transform="translate(26, 20)">
+                <circle cx="14" cy="14" r="13" fill="#3A404D"/>
+                <path d="M11 4 L17 4 L17 9 L11 9 Z" fill="#1C212B"/>
+                <path d="M11 19 L17 19 L17 24 L11 24 Z" fill="#1C212B"/>
+                <path d="M4 11 L9 11 L9 17 L4 17 Z" fill="#1C212B"/>
+                <path d="M19 11 L24 11 L24 17 L19 17 Z" fill="#1C212B"/>
+              </g>
+
+              <!-- SONY & PS Logo in Center -->
+              <text x="76" y="20" font-family="'JetBrains Mono', monospace" font-size="5" font-weight="900" fill="#4B5563">SONY</text>
+              <g transform="translate(80, 24) scale(0.45)">
+                <path d="M7 2 L12 2 C15 2 17 4 17 7 C17 10 15 12 12 12 L9 12 L9 20 L7 20 Z" fill="#E21B23"/>
+                <path d="M3 16 C6 14 11 14 15 16 C17 17 17 18 15 19 C12 20 5 19 3 20" stroke="#F4C20D" stroke-width="2"/>
+                <path d="M4 18 C8 16 14 16 18 18" stroke="#00A2E8" stroke-width="2"/>
+              </g>
+
+              <!-- SELECT and START buttons -->
+              <rect x="67" y="32" width="10" height="3.5" rx="1.5" fill="#4B5563"/>
+              <rect x="93" y="32" width="10" height="3.5" rx="1.5" fill="#4B5563"/>
+
+              <!-- Action Buttons (Right 4 Iconic Geometric Symbols) -->
+              <g transform="translate(116, 20)">
+                <circle cx="14" cy="14" r="13" fill="#3A404D"/>
+                
+                <!-- Triangle (Green) ▲ -->
+                <circle cx="14" cy="5" r="3.5" fill="#1C212B"/>
+                <path d="M14 3.5 L16 6 L12 6 Z" fill="none" stroke="#10B981" stroke-width="1.2"/>
+
+                <!-- Circle (Red) ● -->
+                <circle cx="23" cy="14" r="3.5" fill="#1C212B"/>
+                <circle cx="23" cy="14" r="1.8" fill="none" stroke="#EF4444" stroke-width="1.2"/>
+
+                <!-- Cross (Blue) ✖ -->
+                <circle cx="14" cy="23" r="3.5" fill="#1C212B"/>
+                <path d="M12.5 21.5 L15.5 24.5 M15.5 21.5 L12.5 24.5" stroke="#3B82F6" stroke-width="1.2"/>
+
+                <!-- Square (Pink) ■ -->
+                <circle cx="5" cy="14" r="3.5" fill="#1C212B"/>
+                <rect x="3.5" y="12.5" width="3" height="3" fill="none" stroke="#EC4899" stroke-width="1.2"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Info & Details -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-2xl font-black text-white group-hover:text-blue-300 transition-colors flex items-center justify-between">
+            <span>Sony PlayStation 1 (PS1)</span>
+            <span class="text-xl group-hover:translate-x-2 transition-transform text-blue-400">&rarr;</span>
+          </h3>
+
+          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans">
+            CD-ROM çağını başlatan devrim; Crash Bandicoot, Tekken, Resident Evil, Silent Hill, Gran Turismo ve Metal Gear Solid gibi başyapıtlar.
+          </p>
+
+          <!-- Featured Franchises Tags -->
+          <div class="flex flex-wrap gap-1.5 pt-2">
+            <span class="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-300">Crash Bandicoot</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-300">Tekken 1-3</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-300">Resident Evil</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-300">Gran Turismo</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-300">Metal Gear</span>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="pt-4 border-t border-blue-950/60 flex items-center justify-between">
+          <span class="text-xs font-mono text-slate-400">Arşivi Aç</span>
+          <span class="px-5 py-2.5 rounded-xl bg-blue-600 group-hover:bg-blue-500 text-white font-mono text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-blue-900/40">
+            <span>PS1 Merkezine Gir</span>
+            <span>&rarr;</span>
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Features Overview Bar: EXACTLY 3 CARDS AS REQUESTED -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-2">
+      <!-- 1. Doğrudan Oynanabilir -->
+      <div class="bg-[#0c1222]/80 border border-slate-800/80 p-4 rounded-2xl flex flex-col gap-1.5 shadow-md">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚡</span>
+          <span class="text-sm font-bold text-white">Doğrudan Oynanabilir</span>
+        </div>
+        <span class="text-xs text-slate-400 leading-relaxed">
+          #game entegrasyonu ile tanıtım sayfalarında kaybolmadan doğrudan tarayıcı içi oyun emülatörüne odaklanır.
+        </span>
+      </div>
+
+      <!-- 2. 41 Efsane Seri -->
+      <div class="bg-[#0c1222]/80 border border-slate-800/80 p-4 rounded-2xl flex flex-col gap-1.5 shadow-md">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⭐</span>
+          <span class="text-sm font-bold text-white">41 Efsane Seri</span>
+        </div>
+        <span class="text-xs text-slate-400 leading-relaxed">
+          Mario, Tekken, Resident Evil, Crash, Contra ve tüm devam oyunları özel seri koleksiyonlarında bir araya getirildi.
+        </span>
+      </div>
+
+      <!-- 3. Gelişmiş Arama -->
+      <div class="bg-[#0c1222]/80 border border-slate-800/80 p-4 rounded-2xl flex flex-col gap-1.5 shadow-md">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔍</span>
+          <span class="text-sm font-bold text-white">Gelişmiş Arama</span>
+        </div>
+        <span class="text-xs text-slate-400 leading-relaxed">
+          A-Z harf şeridi, anlık canlı arama ve tür filtreleme ile 2,550 oyun arasından aradığınızı saniyeler içinde bulun.
+        </span>
+      </div>
+    </div>
+
+    <!-- Footer: RİTALİN -->
+    <footer class="pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
+      <div>
+        Bu proje <strong class="text-slate-200">Ritalin</strong> tarafından hazırlanmıştır.
+      </div>
+      <div class="flex items-center gap-4">
+        <span>Kaynak: <a href="https://gam.onl" target="_blank" rel="noopener" class="text-blue-400 hover:underline">gam.onl</a></span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ABOUT & INFO MODAL -->
+  <div id="infoModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-[#0c1222] border border-slate-700 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative flex flex-col gap-5 animate-in fade-in zoom-in duration-200">
+      <button id="btnCloseInfo" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-xl font-bold transition z-10">
+        &times;
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-950/80 border border-indigo-800 flex items-center justify-center text-2xl shrink-0">
+          ℹ️
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-white">Retro Game Hub Hakkında</h3>
+          <p class="text-xs text-slate-400 font-mono">NES & PlayStation 1 Retro Arşivi</p>
+        </div>
+      </div>
+
+      <div class="bg-[#050811] border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3">
+        <p class="text-sm text-slate-200 leading-relaxed font-sans">
+          Bu program Ritalin tarafından yazılmıştır. Oyunlar gam.onl sitesine yönlendirmektedir.
+        </p>
+        
+        <div class="pt-3 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-slate-400">
+          <div><span class="text-slate-500">Geliştirici:</span> <span class="text-slate-200">Ritalin</span></div>
+          <div><span class="text-slate-500">Kaynak:</span> <span class="text-blue-400">gam.onl</span></div>
+          <div><span class="text-slate-500">Desteklenen:</span> <span class="text-slate-200">NES (8-Bit) & PS1 (32-Bit)</span></div>
+          <div><span class="text-slate-500">Toplam Oyun:</span> <span class="text-amber-400">2,550 Oyun</span></div>
+          <div><span class="text-slate-500">Toplam Seri:</span> <span class="text-purple-400">41 Özel Koleksiyon</span></div>
+          <div><span class="text-slate-500">Çalışma Şekli:</span> <span class="text-emerald-400">Çevrimdışı / Web Uyumlu</span></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end">
+        <button id="btnCloseInfoBtn" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono font-bold text-slate-200 transition cursor-pointer">
+          Kapat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const infoModal = document.getElementById('infoModal');
+    const btnOpenInfo = document.getElementById('btnOpenInfo');
+    const btnCloseInfo = document.getElementById('btnCloseInfo');
+    const btnCloseInfoBtn = document.getElementById('btnCloseInfoBtn');
+
+    btnOpenInfo.addEventListener('click', () => {
+      infoModal.classList.remove('hidden');
+    });
+
+    btnCloseInfo.addEventListener('click', () => {
+      infoModal.classList.add('hidden');
+    });
+
+    btnCloseInfoBtn.addEventListener('click', () => {
+      infoModal.classList.add('hidden');
+    });
+
+    infoModal.addEventListener('click', (e) => {
+      if (e.target === infoModal) {
+        infoModal.classList.add('hidden');
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        infoModal.classList.add('hidden');
+      }
+      // Quick Keyboard Navigation
+      if (e.key === '1' || e.key === 'n' || e.key === 'N') {
+        window.location.href = './nes_game_hub/index.html';
+      }
+      if (e.key === '2' || e.key === 'p' || e.key === 'P') {
+        window.location.href = './ps1_game_hub/index.html';
+      }
+    });
+  </script>
+</body>
+</html>
